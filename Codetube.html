@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CodeTube - Learn, Code & Grow</title>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background-color: #0e0e0f;
+  color: #e6e6e6;
+  font-family: "Poppins", sans-serif;
+  scroll-behavior: smooth;
+}
+
+header {
+  background: #101214;
+  color: #00ffff;
+  text-align: center;
+  padding: 25px 10px;
+  font-size: 2rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  box-shadow: 0 2px 20px rgba(0,255,255,0.3);
+}
+
+nav {
+  background: #16181a;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+nav a {
+  color: #00ffff;
+  margin: 8px 15px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+nav a:hover, nav a.active {
+  color: #fff;
+  text-shadow: 0 0 10px #00ffff;
+}
+
+section {
+  padding: 60px 30px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+section.visible { opacity: 1; transform: translateY(0); }
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 25px;
+  color: #00ffff;
+  text-shadow: 0 0 8px #00ffff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+iframe {
+  width: 100%;
+  height: 220px;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #00ffff;
+}
+
+.card {
+  background: #1a1d20;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,255,255,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 18px rgba(0,255,255,0.3);
+}
+
+h3 { color: #00ffff; margin-bottom: 10px; font-size: 1.2rem; }
+p { color: #ccc; font-size: 0.9rem; }
+
+.top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #00ffff;
+  color: #000;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 50px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 10px #00ffff;
+}
+
+footer {
+  background: #111;
+  text-align: center;
+  padding: 25px;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.video-section-title { font-size: 1.6rem; margin: 20px 0 10px; color: #00ffff; text-shadow: 0 0 6px #00ffff; }
+.language-progress { width: 80%; height: 10px; background: #333; margin: 5px auto 20px; border-radius: 5px; }
+.language-progress-inner { height: 100%; width: 0%; background: #00ffff; border-radius: 5px; transition: width 0.3s; }
+.checkbox-label { display: block; margin-top: 8px; cursor: pointer; font-size: 0.85rem; color: #ccc; }
+
+@media (max-width: 600px) { h2 { font-size: 1.6rem; } header { font-size: 1.6rem; } }
+
+
+/* ================= QUIZ SECTION STYLES ================= */
+.quiz-section {
+  background: #121212;
+  color: #fff;
+  padding: 50px 20px;
+  text-align: center;
+  border-top: 2px solid #00bfff;
+  margin-top: 50px;
+}
+
+.quiz-section h2 {
+  font-size: 2rem;
+  color: #00bfff;
+  margin-bottom: 15px;
+}
+
+.quiz-select button {
+  background-color: #00bfff;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+
+.quiz-select button:hover {
+  background-color: #008ecc;
+}
+
+.quiz-container {
+  background: #1e1e1e;
+  margin: 30px auto;
+  max-width: 700px;
+  padding: 20px;
+  border-radius: 10px;
+  display: none;
+  text-align: left;
+}
+
+.quiz-container button {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  background: #00bfff;
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.quiz-container button:hover {
+  background: #008ecc;
+}
+
+#score {
+  font-size: 1.3rem;
+  margin-top: 15px;
+  color: #00ffff;
+}
+
+progress {
+  width: 100%;
+  height: 15px;
+  margin-top: 15px;
+}
+
+/* Smart Study Planner */
+.planner-container {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+#task-input {
+  width: 70%;
+  padding: 10px;
+  margin-right: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+
+#add-task-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #00ffff;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#add-task-btn:hover {
+  background: #00cccc;
+}
+
+#task-list {
+  list-style: none;
+  margin-top: 20px;
+}
+
+#task-list li {
+  background: #1a1d20;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#task-list li.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.task-btn {
+  background: transparent;
+  border: none;
+  color: #00ffff;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.planner-progress {
+  width: 100%;
+  height: 12px;
+  background: #333;
+  border-radius: 6px;
+  margin: 15px 0;
+}
+
+.planner-progress-inner {
+  height: 100%;
+  width: 0%;
+  background: #00ffff;
+  border-radius: 6px;
+  transition: width 0.3s;
+}
+
+#login-modal input { font-size: 1rem; }
+#login-modal button { transition: 0.3s; }
+#login-modal button:hover { background:#00cccc; }
+#user-info button:hover { background:#00cccc; }
+
+
+#portfolio .card {
+  background: #1a1d20;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,255,255,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-align: left;
+}
+#portfolio .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 18px rgba(0,255,255,0.3);
+}
+#portfolio .card h3 { color: #00ffff; font-size: 1.2rem; margin-bottom: 8px; }
+#portfolio .card p { color: #ccc; font-size: 0.9rem; margin-bottom: 5px; }
+#portfolio .card a {
+  color: #00ffff;
+  text-decoration: none;
+  font-weight: bold;
+}
+#portfolio .card a:hover { text-decoration: underline; }
+
+
+</style>
+</head>
+<body>
+
+<header>CodeTube</header>
+
+<nav>
+  <a href="#videos">Coding Videos</a>
+  <a href="#resources">Resources</a>
+  <a href="#careers">High-Level Careers</a>
+  <a href="#companies">Top Companies</a>
+  <a href="#projects">Project Ideas</a>
+  <a href="#Quiz">Quiz</a>
+  <a href="#study planner'> Study Planner</a>
+  <a href="#portfolio ideas"> Portfolio Ideas</a>
+  <a href="#login">Login</a>
+</nav>
+
+<!-- Login/Register Modal -->
+<div id="login-modal" style="display:flex; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; z-index:50;">
+  <div style="background:#1a1d20; padding:30px; border-radius:12px; width:320px; text-align:center;">
+    <h2 style="color:#00ffff; margin-bottom:15px;">Login / Register</h2>
+    <input type="text" id="username-input" placeholder="Username" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:none;">
+    <input type="password" id="password-input" placeholder="Password" style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px; border:none;">
+    <button id="login-btn" style="width:100%; padding:10px; border:none; border-radius:8px; background:#00ffff; font-weight:bold; cursor:pointer;">Login / Register</button>
+    <p id="login-msg" style="color:#ff5555; margin-top:10px;"></p>
+  </div>
+</div>
+
+<!-- User Info Display -->
+<div id="user-info" style="text-align:right; padding:10px 30px; color:#00ffff; display:none;">
+  Logged in as <span id="current-user"></span>
+  <button id="logout-btn" style="margin-left:15px; background:#00ffff; color:#000; border:none; border-radius:6px; padding:5px 10px; cursor:pointer;">Logout</button>
+</div>
+
+<!-- Coding Videos -->
+<section id="videos">
+  <h2>Coding Videos</h2>
+  <div id="videos-container"></div>
+</section> 
+
+<!-- Resources -->
+<section id="resources">
+  <h2>Educational Resources</h2>
+  <div class="grid" id="resources-container"></div>
+</section>
+
+<!-- High-Level Careers -->
+<section id="careers">
+  <h2>High-Level Careers in Tech</h2>
+  <div class="grid" id="careers-container"></div>
+</section>
+
+<!-- Top Companies -->
+<section id="companies">
+  <h2>Global Tech & AI Companies</h2>
+  <div class="grid" id="companies-container"></div>
+</section>
+
+<section id="projects">
+  <h2>Coding Project Ideas</h2>
+  <div class="grid" id="projects-container"></div>
+</section>
+
+
+<section id="quiz" class="quiz-section">
+  <h2>Quick Coding Quiz</h2>
+  <div id="quiz-language-selection">
+    <h3>Select a Language:</h3>
+    <div id="language-buttons"></div>
+  </div>
+  <div id="quiz-container" class="quiz-container" style="display:none;">
+    <div class="question" id="question-text"></div>
+    <div id="options"></div>
+    <progress id="quiz-progress" max="5" value="0"></progress>
+  </div>
+  <div class="score-section" id="score"></div>
+</section>
+
+<!-- Smart Study Planner -->
+<section id="planner">
+  <h2>Smart Study Planner</h2>
+  <div class="planner-container">
+    <input type="text" id="task-input" placeholder="Enter a study task..." />
+    <button id="add-task-btn">Add Task</button>
+    <div class="planner-progress">
+      <div class="planner-progress-inner" id="planner-progress-inner"></div>
+    </div>
+    <ul id="task-list"></ul>
+  </div>
+</section>
+
+<!-- Interactive Digital Portfolio -->
+<section id="portfolio">
+  <h2>Interactive Digital Portfolio Ideas</h2>
+  <div class="grid" id="portfolio-container"></div>
+</section>
+
+
+<button class="top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
+
+<footer>© 2025 CodeTube | Built for learners worldwide</footer>
+
+<script>
+// ======= Videos Data =======
+const videoData = [
+  { lang: "Python", videos: [
+    { title: "Python Full Course", url: "https://www.youtube.com/embed/_uQrJ0TkZlc" },
+    { title: "Python for Beginners", url: "https://www.youtube.com/embed/rfscVS0vtbw" },
+    { title: "Python Crash Course", url: "https://www.youtube.com/embed/H1elmMBnykA" },
+    { title: "Python OOP Tutorial", url: "https://www.youtube.com/embed/JeznW_7DlB0" }
+  ]},
+  { lang: "JavaScript", videos: [
+    { title: "JavaScript Tutorial", url: "https://www.youtube.com/embed/W6NZfCO5SIk" },
+    { title: "JS Full Course", url: "https://www.youtube.com/embed/hdI2bqOjy3c" },
+    { title: "Learn JavaScript", url: "https://www.youtube.com/embed/qoSksQ4s_hg" },
+    { title: "JavaScript DOM Tutorial", url: "https://www.youtube.com/embed/0ik6X4DJKCc" }
+  ]},
+  { lang: "Java", videos: [
+    { title: "Java Full Course", url: "https://www.youtube.com/embed/gfkTfcpWqAY?si=2beI5GLvVDIXQeTv" },
+    { title: "Java Tutorial for Beginners", url: "https://www.youtube.com/embed/eIrMbAQSU34" },
+    { title: "Java OOP Concepts", url: "https://www.youtube.com/embed/5o3fMLPY7qY" },
+    { title: "Java OOPs in One Shot", url: "https://www.youtube.com/embed/bSrm9RXwBaI?si=WVGqVYN-NOwqkUIS" }
+  ]},
+  { lang: "C++", videos: [
+    { title: "C++ Tutorial", url: "https://www.youtube.com/embed/vLnPwxZdW4Y" },
+    { title: "C++ Full Course", url: "https://www.youtube.com/embed/AEKBlW81SAc?si=eJmWyu3pUQxfO_oa" },
+    { title: "C++ STL Tutorial", url: "https://www.youtube.com/embed/8jLOx1hD3_o" },
+    { title: "C++ OOP Concepts", url: "https://www.youtube.com/embed/mlIUKyZIUUU?si=UkvMK6YP_f4HKyhd" }
+  ]},
+  { lang: "C#", videos: [
+    { title: "C# Tutorial", url: "https://www.youtube.com/embed/YrtFtdTTfv0?si=3ZSELPTmJCIBrb05" },
+    { title: "C# OOP Concepts", url: "https://www.youtube.com/embed/iA0XZwFqqKI?si=kk_6qluPHpzho4wO" },
+    { title: "C# Windows Forms", url: "https://www.youtube.com/embed/L_Aoq8cY3ws?si=Em4RJPRROkfKrijv" },
+    { title: "C# .NET Core", url: "https://www.youtube.com/embed/QtiM87MV27w?si=r6XpG5TYYDklTMVf" }
+  ]},
+  { lang: "Go", videos: [
+    { title: "GoLang Tutorial", url: "https://www.youtube.com/embed/YS4e4q9oBaU" },
+    { title: "Go Concurrency", url: "https://www.youtube.com/embed/f6kdp27TYZs" },
+    { title: "Go Web Development", url: "https://www.youtube.com/embed/8hly31xKli0" },
+    { title: "Go Channels", url: "https://www.youtube.com/embed/xjymMP73bHI?si=C72mfZv1_J5Z6yQX"}
+  ]},
+  { lang: "Rust", videos: [
+    { title: "Rust Programming", url: "https://www.youtube.com/embed/ygL_xcavzQ4" },
+    { title: "Rust Ownership", url: "https://www.youtube.com/embed/VFIOSWy93H0?si=eCb83tcwyyQYKjbg" },
+    { title: "Rust Full Course", url: "https://www.youtube.com/embed/zF34dRivLOw" },
+    { title: "Rust CLI App", url: "https://www.youtube.com/embed/_T4sE6NEcV0?si=A_7ZXaVjI4wldPuE" }
+  ]},
+  { lang: "PHP", videos: [
+    { title: "PHP Full Course", url: "https://www.youtube.com/embed/OK_JCtrrv-c" },
+    { title: "PHP for Beginners", url: "https://www.youtube.com/embed/1PnVor36_40" },
+    { title: "PHP OOP Tutorial", url: "https://www.youtube.com/embed/oJbfyzaA2QA" },
+    { title: "PHP CRUD App", url: "https://www.youtube.com/embed/UC2sC25AP2I?si=TLfy4KzjmXA4YRJo"}
+  ]},
+  { lang: "Kotlin", videos: [
+    { title: "Kotlin Tutorial", url: "https://www.youtube.com/embed/F9UC9DY-vIU?si=peVjiM1qPQLTshaH"},
+    { title: "Kotlin Android App", url: "https://www.youtube.com/embed/NMOdEHyMXBo?si=a6RGAJEz0r31zssS"},
+    { title: "Kotlin Coroutines", url: "https://www.youtube.com/embed/ppvhqkjuu9c?si=vQx4uCvoYBsPmYh-" },
+    { title: "Kotlin Full Course", url: "https://www.youtube.com/embed/dzUc9vrsldM?si=eSXufwP9iq0lUp0J" }
+  ]},
+  { lang: "Swift", videos: [
+    { title: "Swift Programming", url: "https://www.youtube.com/embed/comQ1-x2a1Q" },
+    { title: "SwiftUI Tutorial", url: "https://www.youtube.com/embed/UmE5gtlwMc4?si=ZVuMkJuKHW9-TQvl" },
+    { title: "Swift iOS App", url: "https://www.youtube.com/embed/xkgaIm7QxK0?si=sT61oeX_Cu8SostB" },
+    { title: "Swift Full Course", url: "https://www.youtube.com/embed/UmE5gtlwMc4?si=F9BOmSvfwoYTGgHl"}
+  ]}
+];
+
+// Populate Videos with progress bars
+const videosContainer = document.getElementById('videos-container');
+videoData.forEach(lang => {
+  const langTitle = document.createElement('div');
+  langTitle.className = 'video-section-title';
+  langTitle.textContent = lang.lang;
+  videosContainer.appendChild(langTitle);
+
+  const progressContainer = document.createElement('div');
+  progressContainer.className = 'language-progress';
+  const progressInner = document.createElement('div');
+  progressInner.className = 'language-progress-inner';
+  progressContainer.appendChild(progressInner);
+  videosContainer.appendChild(progressContainer);
+
+  const langGrid = document.createElement('div');
+  langGrid.className = 'grid';
+  lang.videos.forEach(vid => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<h3>${vid.title}</h3>
+                      <iframe src="${vid.url}" allowfullscreen></iframe>
+                      <label class="checkbox-label">
+                        <input type="checkbox" onchange="updateProgress(this, progressInner, ${lang.videos.length})"> Completed
+                      </label>`;
+    langGrid.appendChild(card);
+  });
+  videosContainer.appendChild(langGrid);
+});
+
+function updateProgress(checkbox, progressBar, total) {
+  const parent = checkbox.closest('.grid');
+  const checked = parent.querySelectorAll('input:checked').length;
+  progressBar.style.width = ((checked / total) * 100) + '%';
+}
+
+// ======= Resources =======
+const resources = [
+  { title: "MDN Web Docs", url: "https://developer.mozilla.org/" },
+  { title: "W3Schools", url: "https://www.w3schools.com/" },
+  { title: "GeeksforGeeks", url: "https://www.geeksforgeeks.org/" },
+  { title: "freeCodeCamp", url: "https://www.freecodecamp.org/" },
+  { title: "Coursera", url: "https://www.coursera.org/" },
+  { title: "Udemy", url: "https://www.udemy.com/" },
+  { title: "edX", url: "https://www.edx.org/" },
+  { title: "LeetCode", url: "https://leetcode.com/" },
+  { title: "HackerRank", url: "https://www.hackerrank.com/" },
+  { title: "Stack Overflow", url: "https://stackoverflow.com/" }
+];
+
+const resContainer = document.getElementById('resources-container');
+resources.forEach(res => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `<h3>${res.title}</h3><p><a href="${res.url}" target="_blank" style="color:#00ffff;">Visit Resource</a></p>`;
+  resContainer.appendChild(card);
+});
+
+// ======= Careers =======
+const careers = [
+  "AI Engineer","Data Scientist","Machine Learning Engineer","Cybersecurity Analyst",
+  "DevOps Engineer","Cloud Solutions Architect","Full Stack Developer","Mobile App Developer",
+  "Blockchain Developer","Game Developer","Cloud Security Engineer","AI Researcher",
+  "Product Manager (Tech)","Data Engineer","Robotics Engineer","AR/VR Developer",
+  "AI Ethics Specialist","UI/UX Designer","Software Tester (QA)","Technical Writer",
+  "Network Engineer","Embedded Systems Engineer","Site Reliability Engineer","Software Architect","Quantum Computing Researcher"
+];
+
+// ========== PROJECT IDEAS ==========
+const projects = [
+  // Beginner
+  { title: "To-Do List App", level: "Beginner", desc: "Manage daily tasks using HTML, CSS, and JS." },
+  { title: "Calculator", level: "Beginner", desc: "Simple calculator using JavaScript." },
+  { title: "Quiz App", level: "Beginner", desc: "Build a multiple-choice quiz game." },
+  { title: "Weather App", level: "Beginner", desc: "Fetch real-time weather via OpenWeather API." },
+  { title: "Portfolio Website", level: "Beginner", desc: "Showcase your work with HTML & CSS." },
+  { title: "Digital Clock", level: "Beginner", desc: "Live updating digital clock using JS." },
+  { title: "Random Quote Generator", level: "Beginner", desc: "Display random quotes with API." },
+  { title: "Currency Converter", level: "Beginner", desc: "Convert currencies using exchange rate API." },
+  { title: "BMI Calculator", level: "Beginner", desc: "Calculate Body Mass Index from user input." },
+  { title: "Color Picker", level: "Beginner", desc: "Change background color dynamically." },
+
+  // Intermediate
+  { title: "Chat Application", level: "Intermediate", desc: "Real-time chat using WebSocket or Firebase." },
+  { title: "Expense Tracker", level: "Intermediate", desc: "Track expenses and visualize with charts." },
+  { title: "Recipe Finder", level: "Intermediate", desc: "Use a recipe API to search dishes." },
+  { title: "Blog CMS", level: "Intermediate", desc: "Create a simple blog with CRUD operations." },
+  { title: "E-commerce Store", level: "Intermediate", desc: "Shopping cart and product filtering." },
+  { title: "Image Gallery", level: "Intermediate", desc: "Dynamic gallery with lazy loading." },
+  { title: "Markdown Editor", level: "Intermediate", desc: "Live preview markdown typing." },
+  { title: "Movie App", level: "Intermediate", desc: "Fetch movie data using OMDB API." },
+  { title: "Notes App", level: "Intermediate", desc: "Persistent notes with localStorage." },
+  { title: "URL Shortener", level: "Intermediate", desc: "Shorten and manage links." },
+
+  // Advanced
+  { title: "AI Chatbot", level: "Advanced", desc: "Integrate GPT API for chat assistant." },
+  { title: "Code Editor", level: "Advanced", desc: "Online code editor with syntax highlighting." },
+  { title: "Online Compiler", level: "Advanced", desc: "Compile code using API backend." },
+  { title: "Task Management Tool", level: "Advanced", desc: "Like Trello, with drag-and-drop tasks." },
+  { title: "Stock Tracker", level: "Advanced", desc: "Real-time stock and crypto data visualizer." },
+  { title: "Social Media Dashboard", level: "Advanced", desc: "Track followers, likes, analytics." },
+  { title: "AI Image Generator", level: "Advanced", desc: "Use DALL·E or Stability API." },
+  { title: "Job Finder", level: "Advanced", desc: "Fetch jobs via REST API and filter by tech." },
+  { title: "Music Streaming App", level: "Advanced", desc: "Play and manage playlists via API." },
+  { title: "Weather Forecast Dashboard", level: "Advanced", desc: "Detailed 5-day forecast visualization." },
+
+  // Extra 20+ ideas
+  { title: "ChatGPT Clone", level: "Advanced", desc: "Integrate OpenAI API with styled UI." },
+  { title: "AI Resume Builder", level: "Advanced", desc: "Auto-generate resumes using AI." },
+  { title: "News Aggregator", level: "Intermediate", desc: "Fetch and categorize live news." },
+  { title: "Online Whiteboard", level: "Advanced", desc: "Collaborative drawing tool." },
+  { title: "Event Planner", level: "Intermediate", desc: "Manage and RSVP for events." },
+  { title: "Travel Planner", level: "Intermediate", desc: "Plan itineraries with map integration." },
+  { title: "Crypto Wallet Tracker", level: "Advanced", desc: "Track wallets and transactions." },
+  { title: "Fitness Tracker", level: "Intermediate", desc: "Track workouts and calories." },
+  { title: "Music Visualizer", level: "Advanced", desc: "Animate based on audio frequency." },
+  { title: "Machine Learning Dashboard", level: "Advanced", desc: "Visualize datasets and models." },
+  { title: "Online Bookstore", level: "Intermediate", desc: "Add to cart and checkout functionality." },
+  { title: "Virtual Classroom", level: "Advanced", desc: "Video lectures and notes upload system." },
+  { title: "AI Translator", level: "Advanced", desc: "Language translation using API." },
+  { title: "E-learning Platform", level: "Advanced", desc: "Full course management system." },
+  { title: "Password Manager", level: "Intermediate", desc: "Encrypt and manage passwords." },
+  { title: "Voice Assistant", level: "Advanced", desc: "Speech recognition with Web Speech API." },
+  { title: "Image Compressor", level: "Intermediate", desc: "Reduce image size in-browser." },
+  { title: "Expense Sharing App", level: "Intermediate", desc: "Split expenses among friends." },
+  { title: "AI News Summarizer", level: "Advanced", desc: "Summarize news using NLP APIs." },
+  { title: "Portfolio Generator", level: "Intermediate", desc: "Auto-generate portfolio sites." }
+];
+
+const projContainer = document.getElementById('projects-container');
+projects.forEach(p => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `<h3>${p.title}</h3><p><strong>${p.level}</strong> — ${p.desc}</p>`;
+  projContainer.appendChild(card);
+});
+const careersContainer = document.getElementById('careers-container');
+careers.forEach(career => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `<h3>${career}</h3><p>Explore high-level career opportunities in tech.</p>`;
+  careersContainer.appendChild(card);
+});
+
+// ======= Companies =======
+const companies = [
+  "Google","Microsoft","Amazon","OpenAI","Apple","Meta","IBM","Intel","NVIDIA","DeepMind",
+  "Anthropic","Tesla","Adobe","Palantir","CrowdStrike","Salesforce","Oracle","Netflix","Uber",
+  "Zoom","Spotify","Snap Inc.","Epic Games","LinkedIn","Hugging Face","Stability AI"
+];
+
+const companiesContainer = document.getElementById('companies-container');
+companies.forEach(company => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `<h3>${company}</h3><p>Explore innovative products and career opportunities.</p>`;
+  companiesContainer.appendChild(card);
+});
+
+// ===== Scroll Section Highlight =====
+document.addEventListener("scroll", () => {
+  document.querySelectorAll("section").forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 150) sec.classList.add("visible");
+  });
+  const scrollY = window.scrollY;
+  document.querySelectorAll("section").forEach(sec => {
+    const link = document.querySelector(`nav a[href="#${sec.id}"]`);
+    if (link) {
+      const offsetTop = sec.offsetTop - 100;
+      const offsetBottom = offsetTop + sec.offsetHeight;
+      link.classList.toggle("active", scrollY >= offsetTop && scrollY < offsetBottom);
+    }
+  });
+});
+window.dispatchEvent(new Event("scroll"));
+
+// Quiz questions separated by language
+const quizData = {
+  Python: [
+    { question: "Which keyword is used to define a function in Python?", options: ["func", "def", "function", "define"], answer: "def" },
+    { question: "What is the output of print(2 ** 3)?", options: ["5", "6", "8", "9"], answer: "8" },
+    { question: "Which method adds an item to a list?", options: ["append()", "add()", "insert()", "push()"], answer: "append()" },
+    { question: "What does 'len()' do in Python?", options: ["Print value", "Get length", "Add numbers", "Convert type"], answer: "Get length" }
+  ],
+  JavaScript: [
+    { question: "Which symbol is used for comments in JS?", options: ["//", "/* */", "#", "<!-- -->"], answer: "//" },
+    { question: "Which function parses a string to integer?", options: ["parseInt()", "int()", "Number()", "parse()"], answer: "parseInt()" },
+    { question: "What does '===' mean?", options: ["Assignment", "Equality with type", "Equality without type", "Not equal"], answer: "Equality with type" },
+    { question: "Which method adds an item to an array?", options: ["push()", "add()", "append()", "insert()"], answer: "push()" }
+  ],
+  Java: [
+    { question: "Which keyword is used for inheritance?", options: ["this", "super", "extends", "implements"], answer: "extends" },
+    { question: "What is the size of int in Java?", options: ["2 bytes", "4 bytes", "8 bytes", "Depends on system"], answer: "4 bytes" },
+    { question: "Which method starts a thread?", options: ["run()", "start()", "execute()", "init()"], answer: "start()" },
+    { question: "What is JVM?", options: ["Java Variable Machine", "Java Virtual Method", "Java Virtual Machine", "Java Variable Memory"], answer: "Java Virtual Machine" }
+  ]
+};
+
+// Variables
+let currentQuestion = 0;
+let score = 0;
+let selectedLanguage = "";
+let currentQuestions = [];
+
+// Populate language buttons dynamically
+const languageButtonsDiv = document.getElementById("language-buttons");
+Object.keys(quizData).forEach(lang => {
+  const btn = document.createElement("button");
+  btn.textContent = lang;
+  btn.onclick = () => startQuiz(lang);
+  languageButtonsDiv.appendChild(btn);
+});
+
+// Start quiz for selected language
+function startQuiz(lang) {
+  selectedLanguage = lang;
+  currentQuestions = quizData[lang];
+  currentQuestion = 0;
+  score = 0;
+  
+  document.getElementById("quiz-language-selection").style.display = "none";
+  const quizContainer = document.getElementById("quiz-container");
+  quizContainer.style.display = "block";
+  
+  const progress = document.getElementById("quiz-progress");
+  progress.max = currentQuestions.length;
+  progress.value = 0;
+  
+  document.getElementById("score").textContent = "";
+  showQuestion();
+}
+
+// Show current question
+function showQuestion() {
+  const q = currentQuestions[currentQuestion];
+  document.getElementById("question-text").textContent = q.question;
+  const optionsContainer = document.getElementById("options");
+  optionsContainer.innerHTML = "";
+  
+  q.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(opt);
+    optionsContainer.appendChild(btn);
+  });
+  
+  updateProgress();
+}
+
+// Check answer and move to next
+function checkAnswer(selected) {
+  if (selected === currentQuestions[currentQuestion].answer) score++;
+  currentQuestion++;
+  if (currentQuestion < currentQuestions.length) showQuestion();
+  else endQuiz();
+}
+
+// End Quiz
+function endQuiz() {
+  document.getElementById("quiz-container").style.display = "none";
+  document.getElementById("quiz-language-selection").style.display = "block";
+  document.getElementById("score").textContent = `🎉 You scored ${score} / ${currentQuestions.length} in ${selectedLanguage} Quiz`;
+}
+
+// Update progress bar
+function updateProgress() {
+  const progress = document.getElementById("quiz-progress");
+  progress.value = currentQuestion;
+}
+
+// Smart Study Planner
+const taskInput = document.getElementById("task-input");
+const addTaskBtn = document.getElementById("add-task-btn");
+const taskList = document.getElementById("task-list");
+const plannerProgress = document.getElementById("planner-progress-inner");
+
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  renderTasks();
+  updateProgress();
+}
+
+function addTask() {
+  const taskText = taskInput.value.trim();
+  if (taskText) {
+    tasks.push({ text: taskText, completed: false });
+    taskInput.value = "";
+    saveTasks();
+  }
+}
+
+function toggleTask(index) {
+  tasks[index].completed = !tasks[index].completed;
+  saveTasks();
+}
+
+function deleteTask(index) {
+  tasks.splice(index, 1);
+  saveTasks();
+}
+
+function updateProgress() {
+  if (tasks.length === 0) {
+    plannerProgress.style.width = "0%";
+    return;
+  }
+  const completed = tasks.filter(t => t.completed).length;
+  plannerProgress.style.width = ((completed / tasks.length) * 100) + "%";
+}
+
+function renderTasks() {
+  taskList.innerHTML = "";
+  tasks.forEach((task, index) => {
+    const li = document.createElement("li");
+    li.className = task.completed ? "completed" : "";
+    li.innerHTML = `
+      <span onclick="toggleTask(${index})">${task.text}</span>
+      <button class="task-btn" onclick="deleteTask(${index})">✖</button>
+    `;
+    taskList.appendChild(li);
+  });
+}
+
+addTaskBtn.addEventListener("click", addTask);
+taskInput.addEventListener("keyup", (e) => { if(e.key === "Enter") addTask(); });
+
+// Initialize
+renderTasks();
+updateProgress();
+
+// Expose toggleTask and deleteTask to global scope
+window.toggleTask = toggleTask;
+window.deleteTask = deleteTask;
+
+// ===== Login/Register System =====
+const loginModal = document.getElementById("login-modal");
+const loginBtn = document.getElementById("login-btn");
+const usernameInput = document.getElementById("username-input");
+const passwordInput = document.getElementById("password-input");
+const loginMsg = document.getElementById("login-msg");
+const userInfo = document.getElementById("user-info");
+const currentUserSpan = document.getElementById("current-user");
+const logoutBtn = document.getElementById("logout-btn");
+
+let currentUser = localStorage.getItem("currentUser") || null;
+let users = JSON.parse(localStorage.getItem("users")) || {};
+
+function saveUsers() { localStorage.setItem("users", JSON.stringify(users)); }
+
+function showUserInfo() {
+  if(currentUser){
+    loginModal.style.display = "none";
+    userInfo.style.display = "block";
+    currentUserSpan.textContent = currentUser;
+    loadUserTasks();
+  } else {
+    loginModal.style.display = "flex";
+    userInfo.style.display = "none";
+  }
+}
+
+// Login/Register
+loginBtn.addEventListener("click", () => {
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value.trim();
+  if(!username || !password){ loginMsg.textContent = "Enter username & password!"; return; }
+
+  if(!users[username]){
+    users[username] = { password, tasks: [] };
+    saveUsers();
+    loginMsg.style.color = "#00ff99";
+    loginMsg.textContent = "Registered successfully!";
+  }
+
+  if(users[username].password !== password){
+    loginMsg.textContent = "Incorrect password!";
+    return;
+  }
+
+  currentUser = username;
+  localStorage.setItem("currentUser", currentUser);
+  showUserInfo();
+});
+
+// Logout
+logoutBtn.addEventListener("click", () => {
+  currentUser = null;
+  localStorage.removeItem("currentUser");
+  showUserInfo();
+});
+
+// ===== Integrate with Study Planner =====
+function saveTasks() {
+  if(!currentUser) return;
+  users[currentUser].tasks = tasks;
+  saveUsers();
+  renderTasks();
+  updateProgress();
+}
+
+function loadUserTasks() {
+  if(currentUser && users[currentUser]){
+    tasks = users[currentUser].tasks || [];
+    renderTasks();
+    updateProgress();
+  }
+}
+
+// Initialize
+showUserInfo();
+
+
+// ===== Interactive Digital Portfolio Data =====
+const portfolioData = [
+  { title: "Personal Portfolio Website", skills: "HTML, CSS, JS"},
+  { title: "Task Manager App", skills: "JavaScript, LocalStorage" },
+  { title: "Weather Dashboard", skills: "API, JS, HTML, CSS"},
+  { title: "E-Commerce Showcase", skills: "HTML, CSS, JS"},
+  { title: "Quiz Application", skills: "JS, HTML, CSS" },
+  { title: "Interactive Game Project", skills: "JS, Canvas API" },
+  { title: "AI Chatbot Demo", skills: "JavaScript, API, AI"},
+  { title: "Smart Study Planner", skills: "JS, HTML, CSS, LocalStorage"}
+];
+
+const portfolioContainer = document.getElementById('portfolio-container');
+
+portfolioData.forEach(proj => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <h3>${proj.title}</h3>
+    <p><strong>Skills:</strong> ${proj.skills}</p>
+   
+  `;
+  portfolioContainer.appendChild(card);
+});
+
+</script>
+</body>
+</html>
